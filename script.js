@@ -194,7 +194,6 @@ class Restaurante {
 
 class Pedido {
     #cantidad;
-    #subtotal;
     #nombre;
     #precio;
 
@@ -206,6 +205,19 @@ class Pedido {
 
     get subtotal() {
         return this.#cantidad * this.#precio
+    }
+    get cantidad() {
+        return this.#cantidad
+    }
+    get nombre() {
+        return this.#nombre
+    }
+    get precio() {
+        return this.#precio
+    }
+
+    get subtotal() {
+        return (this.#cantidad * this.#precio).toFixed(2)
     }
 }
 
@@ -226,6 +238,20 @@ class Comanda {
         this.#mesas = [...this.#mesas, mesa]
     }
 
+    renderizar() {
+        let html = ''
+        let contador = 0
+        for (let item of this.#pedidos) {
+            html += `
+                <tr>
+                    <td>${item.cantidad}</td>
+                    <td>${item.nombre}</td>
+                    <td>${item.precio}</td>
+                    <td>${item.subtotal}</td>
+                </tr>`
+        }
+        tablaPedido.innerHTML = html
+    }
 }
 
 //Objetos
@@ -343,8 +369,7 @@ menuGrid.addEventListener('click', (event) => {
         //Agregar el Pedido a la Comanda
         console.log(mesaSeleccionada)
         mesaSeleccionada.comandas[0].agregarPedido(pedido)
-        //Dibujar el Pedido en la Comanda
-        console.log(mesaSeleccionada)
 
+        mesaSeleccionada.comandas[0].renderizar()
     }
 })

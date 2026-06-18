@@ -231,10 +231,15 @@ class Pedido {
 class Comanda {
     #pedidos;
     #mesas;
+    #impuesto = 0.05
 
     constructor(mesa) { //mesas sera un arreglo
         this.#pedidos = []
         this.#mesas = mesa
+    }
+
+    get subtotal() {
+        return this.#pedidos.reduce((current, acc) => current + parseFloat(acc.subtotal), 0)
     }
 
     agregarPedido(pedido) {
@@ -263,7 +268,13 @@ class Comanda {
                 </tr>`
         }
         tablaPedido.innerHTML = html
+        subTotal.textContent = this.subtotal.toFixed(2)
+        let generarImpuesto = this.subtotal * this.#impuesto
+        impuestos.textContent = generarImpuesto.toFixed(2)
+        total.textContent = (this.subtotal + generarImpuesto).toFixed(2)
     }
+
+
 }
 
 //Objetos
@@ -288,6 +299,9 @@ let totales = document.querySelector('.totales')
 let acciones = document.querySelector('.acciones')
 let menuGrid = document.querySelector('.menu-grid')
 let tablaPedido = document.querySelector('#tabla-pedido')
+let subTotal = document.querySelector('#subtotal')
+let impuestos = document.querySelector('#impuestos')
+let total = document.querySelector('#totales')
 
 contenedorMesas.innerHTML = restaurante.normalizeMesasHTML()
 contenedorNoMesas.textContent = `${restaurante.mesasNo} Mesas`
@@ -304,6 +318,7 @@ let btnEvento = (event) => {
         mesaSeleccionada.muestrame()
     } else {
         mesaSeleccionada.mostrarCuenta()
+        mesaSeleccionada.comandas[0].renderizar()
     }
 
     mesaActualSeleccionada = event.target
@@ -339,14 +354,14 @@ botonUnirMesa.addEventListener('click', (event) => {
         contenedorMesas.removeEventListener('click', btnEventoRojo)
         contenedorMesas.addEventListener('click', btnEvento)
         mesaSeleccionada.mostrarCuenta()
+        comandaObjeto.renderizar()
     } else {
         botonUnirMesa.textContent = "Unir Mesas"
         botonUnirMesa.style = 'background-color: skyblue'
         //Mesa2
         mesaSeleccionada = restaurante.mesas.find(item => item.id == event.target.dataset.id)
+         click = true
     }
-    click = true
-
 })
 
 let productosHTML = ''

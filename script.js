@@ -232,10 +232,12 @@ class Comanda {
     #pedidos;
     #mesas;
     #impuesto = 0.05
+    #estado;
 
     constructor(mesa) { //mesas sera un arreglo
         this.#pedidos = []
         this.#mesas = mesa
+        this.#estado = 'pendiente'
     }
 
     get subtotal() {
@@ -274,7 +276,15 @@ class Comanda {
         total.textContent = (this.subtotal + generarImpuesto).toFixed(2)
     }
 
+    cobrar() {
+        this.#estado = 'Preparando'
+        tablaPedido.innerHTML = ''
+        subtotal.textContent = '0.00'
+        impuestos.textContent = '0.00'
+        total.textContent = '0.00'
 
+        alert('comanda, enviada')
+    }
 }
 
 //Objetos
@@ -302,6 +312,8 @@ let tablaPedido = document.querySelector('#tabla-pedido')
 let subTotal = document.querySelector('#subtotal')
 let impuestos = document.querySelector('#impuestos')
 let total = document.querySelector('#totales')
+let btnCobrar = document.querySelector('.cobrar')
+let btnCerrrar = document.querySelector('.cerrar')
 
 contenedorMesas.innerHTML = restaurante.normalizeMesasHTML()
 contenedorNoMesas.textContent = `${restaurante.mesasNo} Mesas`
@@ -318,7 +330,7 @@ let btnEvento = (event) => {
         mesaSeleccionada.muestrame()
     } else {
         mesaSeleccionada.mostrarCuenta()
-        mesaSeleccionada.comandas[0].renderizar()
+        mesaSeleccionada.comandas[mesaSeleccionada.comandas.length - 1].renderizar()
     }
 
     mesaActualSeleccionada = event.target
@@ -360,7 +372,7 @@ botonUnirMesa.addEventListener('click', (event) => {
         botonUnirMesa.style = 'background-color: skyblue'
         //Mesa2
         mesaSeleccionada = restaurante.mesas.find(item => item.id == event.target.dataset.id)
-         click = true
+        click = true
     }
 })
 
@@ -394,8 +406,26 @@ menuGrid.addEventListener('click', (event) => {
         //Crear un Pedido
         const pedido = new Pedido(1, producto.nombre, producto.precio)
         //Agregar el Pedido a la Comanda
-        mesaSeleccionada.comandas[0].agregarPedido(pedido)
+        mesaSeleccionada.comandas[mesaSeleccionada.comandas.length - 1].agregarPedido(pedido)
 
-        mesaSeleccionada.comandas[0].renderizar()
+        mesaSeleccionada.comandas[mesaSeleccionada.comandas.length - 1].renderizar()
+    }
+})
+
+btnCobrar.addEventListener('click', () => {
+    mesaSeleccionada.comandas[mesaSeleccionada.comandas.length - 1].cobrar()
+    const nuevacomanda = new Comanda([mesaSeleccionada.id])
+    for (let i = 0; i < mesaSeleccionada.mesasUnidas.length; i++) {
+        let mesaAUnir = restaurante.mesas.find(item => item.id == mesaSeleccionada.mesasUnidas[i])
+        mesaAUnir.ingresarComanda(nuevacomanda)
+    }
+    mesaSeleccionada.ingresarComanda(nuevacomanda)
+})
+
+btnCerrrar.addEventListener('click', () => {
+    mesaSeleccionada.cobrarMesa()
+    for (let i = 0; i < mesaSeleccionada.mesasUnidas.length; i++) {
+        let mesaAUnir = restaurante.mesas.find(item => item.id == mesaSeleccionada.mesasUnidas[i])
+        mesaAUnir.cobrarMesa()
     }
 })

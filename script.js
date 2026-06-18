@@ -206,18 +206,25 @@ class Pedido {
     get subtotal() {
         return this.#cantidad * this.#precio
     }
+
     get cantidad() {
         return this.#cantidad
     }
+
     get nombre() {
         return this.#nombre
     }
+
     get precio() {
         return this.#precio
     }
 
     get subtotal() {
         return (this.#cantidad * this.#precio).toFixed(2)
+    }
+
+    set cantidad(value) {
+        this.#cantidad = value
     }
 }
 
@@ -231,7 +238,12 @@ class Comanda {
     }
 
     agregarPedido(pedido) {
-        this.#pedidos = [...this.#pedidos, pedido]
+        let pedidoencontrar = this.#pedidos.find(item => item.nombre == pedido.nombre)
+        if (pedidoencontrar != undefined) {
+            pedidoencontrar.cantidad++
+        } else {
+            this.#pedidos = [...this.#pedidos, pedido]
+        }
     }
 
     agregarMesa(mesa) {
@@ -367,7 +379,6 @@ menuGrid.addEventListener('click', (event) => {
         //Crear un Pedido
         const pedido = new Pedido(1, producto.nombre, producto.precio)
         //Agregar el Pedido a la Comanda
-        console.log(mesaSeleccionada)
         mesaSeleccionada.comandas[0].agregarPedido(pedido)
 
         mesaSeleccionada.comandas[0].renderizar()

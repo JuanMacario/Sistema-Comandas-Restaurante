@@ -254,6 +254,7 @@ contenedorMesas.innerHTML = restaurante.normalizeMesasHTML()
 contenedorNoMesas.textContent = `${restaurante.mesasNo} Mesas`
 let mesaActualSeleccionada;
 let mesaSeleccionada;
+
 let btnEvento = (event) => {
     if (mesaActualSeleccionada != undefined) {
         mesaActualSeleccionada.style = ''
@@ -289,10 +290,9 @@ botonUnirMesa.addEventListener('click', (event) => {
             let mesaAUnir = restaurante.mesas.find(item => item.id == mesaSeleccionada.mesasUnidas[i])
             mesaAUnir.aperturarMesa();
             mesaAUnir.ingresarComanda(comandaObjeto)
-            comandaObjeto.agregarMesa(mesaAUnir.id)
+            comandaObjeto.agregarMesa(mesaAUnir, 1)
         }
         mesaSeleccionada.aperturarMesa();
-        mesaSeleccionada.ingresarComanda(comandaObjeto)
         contenedorMesas.innerHTML = restaurante.normalizeMesasHTML()
 
         botonUnirMesa.textContent = 'Seleccionar Mesas'

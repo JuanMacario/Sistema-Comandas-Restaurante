@@ -112,7 +112,7 @@ class Mesa {
     }
 
     eliminarComanda() {
-
+        this.#comandas.pop()
     }
 
     aperturarMesa() {
@@ -410,6 +410,7 @@ menuGrid.addEventListener('click', (event) => {
 
         mesaSeleccionada.comandas[mesaSeleccionada.comandas.length - 1].renderizar()
     }
+    btnCerrrar.disabled = true
 })
 
 btnCobrar.addEventListener('click', () => {
@@ -420,6 +421,7 @@ btnCobrar.addEventListener('click', () => {
         mesaAUnir.ingresarComanda(nuevacomanda)
     }
     mesaSeleccionada.ingresarComanda(nuevacomanda)
+    btnCerrrar.disabled = false
 })
 
 btnCerrrar.addEventListener('click', () => {
@@ -428,4 +430,5 @@ btnCerrrar.addEventListener('click', () => {
         let mesaAUnir = restaurante.mesas.find(item => item.id == mesaSeleccionada.mesasUnidas[i])
         mesaAUnir.cobrarMesa()
     }
+    mesaSeleccionada.eliminarComanda()
 })

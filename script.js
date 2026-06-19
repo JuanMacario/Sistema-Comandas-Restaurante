@@ -295,7 +295,7 @@ const productos = [
 ]
 
 ///DOM
-let contenedorMesas = document.querySelector('.mesas-grid')
+let contenedorMesas = document.querySelector('#tablaMesasGrid')
 let contenedorNoMesas = document.querySelector('.badge')
 let tituloMesa = document.querySelector('#titulo-mesa')
 let mesaDetalleInfo = document.querySelector('.mesa-detalle-info')
@@ -314,26 +314,29 @@ let impuestos = document.querySelector('#impuestos')
 let total = document.querySelector('#totales')
 let btnCobrar = document.querySelector('.cobrar')
 let btnCerrrar = document.querySelector('.cerrar')
+let btnAbrirCuenta = document.querySelector('.abrir-cuenta')
 
 contenedorMesas.innerHTML = restaurante.normalizeMesasHTML()
 contenedorNoMesas.textContent = `${restaurante.mesasNo} Mesas`
 let mesaActualSeleccionada;
 let mesaSeleccionada;
 let btnEvento = (event) => {
-    if (mesaActualSeleccionada != undefined) {
-        mesaActualSeleccionada.style = ''
-    }
+    if (!event.target.className.includes('mesas-grid')) {
+        if (mesaActualSeleccionada != undefined) {
+            mesaActualSeleccionada.style = ''
+        }
 
-    mesaSeleccionada = restaurante.mesas.find(item => item.id == event.target.dataset.id)
-    event.target.style = 'background: green'
-    if (mesaSeleccionada.estado == estados.Libre) {
-        mesaSeleccionada.muestrame()
-    } else {
-        mesaSeleccionada.mostrarCuenta()
-        mesaSeleccionada.comandas[mesaSeleccionada.comandas.length - 1].renderizar()
-    }
+        mesaSeleccionada = restaurante.mesas.find(item => item.id == event.target.dataset.id)
+        event.target.style = 'background: green'
+        if (mesaSeleccionada.estado == estados.Libre) {
+            mesaSeleccionada.muestrame()
+        } else {
+            mesaSeleccionada.mostrarCuenta()
+            mesaSeleccionada.comandas[mesaSeleccionada.comandas.length - 1].renderizar()
+        }
 
-    mesaActualSeleccionada = event.target
+        mesaActualSeleccionada = event.target
+    }
 }
 
 let btnEventoRojo = (event) => {
@@ -400,7 +403,6 @@ menuGrid.innerHTML = productosHTML
 
 menuGrid.addEventListener('click', (event) => {
     if (event.target.type == 'button') {
-        console.log(event.target.dataset.id)
         //buscar que producto seleccionaron
         let producto = productos.find(item => item.id == event.target.dataset.id)
         //Crear un Pedido
@@ -431,4 +433,16 @@ btnCerrrar.addEventListener('click', () => {
         mesaAUnir.cobrarMesa()
     }
     mesaSeleccionada.eliminarComanda()
+    contenedorMesas.innerHTML = ''
+    contenedorMesas.innerHTML = restaurante.normalizeMesasHTML()
+    panelComanda.classList.add('d-none')
+})
+
+btnAbrirCuenta.addEventListener('click', () => {
+    mesaSeleccionada.aperturarMesa()
+    let comandaObjeto = new Comanda([mesaSeleccionada.id])
+    comandaObjeto.agregarMesa(mesaSeleccionada.id)
+    mesaSeleccionada.ingresarComanda(comandaObjeto)
+    contenedorMesas.innerHTML = restaurante.normalizeMesasHTML()
+    mesaSeleccionada.mostrarCuenta()
 })

@@ -362,6 +362,12 @@ td {
   font-size: 0.84rem;
 }
 
+article p,
+article span,
+article h3 {
+  pointer-events: none;
+}
+
 th {
   color: #374151;
 }

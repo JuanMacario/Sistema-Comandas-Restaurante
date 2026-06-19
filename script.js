@@ -312,7 +312,7 @@ let tablaPedido = document.querySelector('#tabla-pedido')
 let subTotal = document.querySelector('#subtotal')
 let impuestos = document.querySelector('#impuestos')
 let total = document.querySelector('#totales')
-let btnCobrar = document.querySelector('.cobrar')
+let btnCobrar = document.querySelector('#btnCobrar')
 let btnCerrrar = document.querySelector('.cerrar')
 let btnAbrirCuenta = document.querySelector('.abrir-cuenta')
 
@@ -336,6 +336,9 @@ let btnEvento = (event) => {
         }
 
         mesaActualSeleccionada = event.target
+        if (panelComanda.classList.contains('d-none')) {
+            panelComanda.classList.remove('d-none')
+        }
     }
 }
 
@@ -413,6 +416,8 @@ menuGrid.addEventListener('click', (event) => {
         mesaSeleccionada.comandas[mesaSeleccionada.comandas.length - 1].renderizar()
     }
     btnCerrrar.disabled = true
+    btnCobrar.disabled = false
+    btnCobrar.classList.add('cobrar')
 })
 
 btnCobrar.addEventListener('click', () => {
@@ -424,6 +429,8 @@ btnCobrar.addEventListener('click', () => {
     }
     mesaSeleccionada.ingresarComanda(nuevacomanda)
     btnCerrrar.disabled = false
+    btnCobrar.disabled = true
+    btnCobrar.classList.remove('cobrar')
 })
 
 btnCerrrar.addEventListener('click', () => {
@@ -445,4 +452,5 @@ btnAbrirCuenta.addEventListener('click', () => {
     mesaSeleccionada.ingresarComanda(comandaObjeto)
     contenedorMesas.innerHTML = restaurante.normalizeMesasHTML()
     mesaSeleccionada.mostrarCuenta()
+    comandaObjeto.renderizar()
 })
